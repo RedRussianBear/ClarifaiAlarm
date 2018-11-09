@@ -1,5 +1,11 @@
 <resources>
     <string name="app_name">Clarifai Alarm</string>
-    <string name="button_text">Take Photo</string>
+    <string name="button_text_alarm">Take Photo</string>
     <string name="object_hint">Object to look for</string>
+    <string name="date_hint">Alarm date:YY-MM-DD</string>
+    <string name="hour_hint">Alarm Hour (24hr system)</string>
+    <string name="title_activity_alarm">AlarmActivity</string>
+    <string name="button_text_main">Set Alarm</string>
+    <string name="minute_hint">Alarm Minute</string>
+    <string name="info_text_default">Loading...</string>
 </resources>

@@ -1,105 +1,44 @@
 package com.mkhrenov.clarifaialarm;
 
-import android.annotation.SuppressLint;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
-import android.os.AsyncTask;
-import android.os.Environment;
-import android.provider.MediaStore;
-import android.support.v4.content.FileProvider;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.TextView;
 
-import java.io.File;
-import java.io.IOException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
-    static final int REQUEST_TAKE_PHOTO = 1;
-    private String mCurrentPhotoPath = null;
-    private String object;
-    private ClarifaiChecker checker;
-
-
-    private class ClarifaiTask extends AsyncTask<File, Integer, Boolean> {
-        protected Boolean doInBackground(File... images) {
-            for (File image : images)
-                if (checker.imageContains(image, object))
-                    return true;
-            return false;
-        }
-
-        protected void onPostExecute(Boolean result) {
-            TextView response = findViewById(R.id.response);
-
-            if (result) {
-                response.setText("Hooray!");
-            } else {
-                response.setText("Nope");
-            }
-            (new File(mCurrentPhotoPath)).delete();
-            mCurrentPhotoPath = null;
-        }
-    }
+    public static final String EXTRA_MESSAGE = "com.mkhrenov.helloworld.MESSAGE";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        checker = new ClarifaiChecker();
     }
 
+    public void setAlarm(View view) throws ParseException {
+        EditText date = findViewById(R.id.date);
+        EditText hour = findViewById(R.id.hour);
+        EditText minute = findViewById(R.id.minute);
+        EditText object = findViewById(R.id.object);
 
-    private File createImageFile() throws IOException {
-        // Create an image file name
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = "JPEG_" + timeStamp + "_";
-        File storageDir = getFilesDir();
-        File image = File.createTempFile(
-                imageFileName,  /* prefix */
-                ".jpg",         /* suffix */
-                storageDir      /* directory */
-        );
+        String dateString = date.getText().toString() + " " + hour.getText().toString() + ":" + minute.getText().toString();
 
-        // Save a file: path for use with ACTION_VIEW intents
-        mCurrentPhotoPath = image.getAbsolutePath();
-        return image;
-    }
+        Date dateTime = (new SimpleDateFormat("yy-MM-dd HH:mm")).parse(dateString);
 
-    public void dispatchTakePictureIntent(View view) {
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        // Ensure that there's a camera activity to handle the intent
-        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+        Intent alarmIntent = new Intent(this, AlarmActivity.class);
+        alarmIntent.putExtra(EXTRA_MESSAGE, object.getText().toString());
+        AlarmManager alarmManager = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
 
-            File photoFile = null;
-            try {
-                photoFile = createImageFile();
-            } catch (IOException ex) {
-            }
-
-            if (photoFile != null) {
-                Uri photoURI = FileProvider.getUriForFile(this,
-                        "com.mkhrenov.clarifaialarm.fileprovider",
-                        photoFile);
-                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-                startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
-            }
-        }
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        EditText objectView = findViewById(R.id.object);
-        object = objectView.getText().toString();
-        if (mCurrentPhotoPath != null) {
-            new ClarifaiTask().execute(new File(mCurrentPhotoPath));
-        }
+        alarmManager.set(AlarmManager.RTC_WAKEUP, dateTime.getTime(),
+                PendingIntent.getActivity(this, 1, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT));
+        finish();
     }
 
 
