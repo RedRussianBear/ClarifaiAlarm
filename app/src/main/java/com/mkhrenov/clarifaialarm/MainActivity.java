@@ -14,7 +14,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
-    public static final String EXTRA_MESSAGE = "com.mkhrenov.helloworld.MESSAGE";
+    public static final String EXTRA_MESSAGE = "com.mkhrenov.clarifaialarm.MESSAGE";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -7,5 +7,5 @@
     <string name="title_activity_alarm">AlarmActivity</string>
     <string name="button_text_main">Set Alarm</string>
     <string name="minute_hint">Alarm Minute</string>
-    <string name="info_text_default">Loading...</string>
+    <string name="info_text_default">Loading…</string>
 </resources>

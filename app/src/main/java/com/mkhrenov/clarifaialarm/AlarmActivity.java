@@ -58,13 +58,15 @@ public class AlarmActivity extends AppCompatActivity {
         }
 
         protected void onPostExecute(Boolean result) {
-            if (result && mediaPlayer != null) {
-                info.setText("Success!");
-                finish();
-            }
-            else info.setText("Try again...");
+            // Delete photo
             (new File(photoPath)).delete();
             photoPath = null;
+
+            // If image contained object, close the AlarmActivity
+            if (result) {
+                info.setText("Success!");
+                finish();
+            } else info.setText("Try again...");
         }
     }
 
@@ -126,7 +128,9 @@ public class AlarmActivity extends AppCompatActivity {
                 );
 
                 photoPath = photoFile.getAbsolutePath();
-            } catch (IOException ex) { return; }
+            } catch (IOException ex) {
+                return;
+            }
 
             Uri photoURI = FileProvider.getUriForFile(this,
                     "com.mkhrenov.clarifaialarm.fileprovider",
