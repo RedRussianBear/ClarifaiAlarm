@@ -36,7 +36,7 @@ public class AlarmActivity extends AppCompatActivity {
         protected Boolean doInBackground(File... images) {
             info.setText("Processing...");
 
-            ClarifaiClient client = new ClarifaiBuilder("eb1ba82793454a1fba4be27bcbcf49c2").buildSync();
+            ClarifaiClient client = new ClarifaiBuilder("YOUR_API_TOKEN").buildSync();
             List<ClarifaiOutput<Concept>> predictionResults;
 
             for (File image : images) {
